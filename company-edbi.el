@@ -28,12 +28,28 @@
 (require 'cl-lib)
 (require 'edbi)
 
-edbi:ac-editor-table-candidates
-edbi:ac-editor-column-candidates
-edbi:ac-editor-type-candidates
-edbi:ac-editor-keyword-candidates
+;; edbi:ac-editor-table-candidates
+;; edbi:ac-editor-column-candidates
+;; edbi:ac-editor-type-candidates
+;; edbi:ac-editor-keyword-candidates
+
+(defun company-edbi-prefix ()
+  "Grab prefix for `company-edbi' backend."
+  (and (eq major-mode 'edbi:sql-mode)
+       (not (company-in-string-or-comment))
+       (or (company-grab-symbol-cons "\\." 1)
+           'stop)))
 
 ;;;###autoload
+(defun company-edbi (command &optional arg)
+  "Edbi backend for company-mode.
+See `company-backends' for more info about COMMAND and ARG."
+  (interactive (list 'interactive))
+  (cl-case command
+    (interactive (company-begin-backend 'company-edbi))
+    (prefix (company-edbi-prefix))
+    (candidates nil)))
+
 (add-hook 'edbi:dbview-update-hook 'edbi:ac-editor-word-candidate-update)
 
 (provide 'company-edbi)
