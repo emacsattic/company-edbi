@@ -5,7 +5,7 @@
 ;; Author: Malyshev Artem <proofit404@gmail.com>
 ;; URL: https://github.com/proofit404/company-edbi
 ;; Version: 0.1.0
-;; Package-Requires: ((company "0.8.5") (edbi "0.1.3") (cl-lib "0.5.0"))
+;; Package-Requires: ((company "0.8.5") (edbi "0.1.3") (cl-lib "0.5.0") (s "1.9.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 (require 'company)
 (require 'cl-lib)
 (require 'edbi)
+(require 's)
 
 (defun company-edbi-prefix ()
   "Grab prefix for `company-edbi' backend."
@@ -43,7 +44,7 @@
   "Candidates list for `edbi' query editor.
 PREFIX is a candidates prefix supplied by `company'."
   (cl-remove-if-not
-   (lambda (x) (string-prefix-p prefix x t))
+   (lambda (x) (s-prefix? prefix x t))
    (append
     (edbi:ac-editor-type-candidates)
     (mapcar 'car
@@ -51,6 +52,14 @@ PREFIX is a candidates prefix supplied by `company'."
              (edbi:ac-editor-table-candidates)
              (edbi:ac-editor-column-candidates)
              (edbi:ac-editor-keyword-candidates))))))
+
+(defun company-edbi-meta (candidate)
+  "Get CANDIDATE meta information."
+  (let* ((summary (get-text-property 0 'summary candidate))
+         (document (s-trim-right (get-text-property 0 'document candidate))))
+    (concat summary
+            (unless (string= summary document)
+              (concat " " document)))))
 
 ;;;###autoload
 (defun company-edbi (command &optional arg)
@@ -60,7 +69,8 @@ See `company-backends' for more info about COMMAND and ARG."
   (cl-case command
     (interactive (company-begin-backend 'company-edbi))
     (prefix (company-edbi-prefix))
-    (candidates (company-edbi-candidates arg))))
+    (candidates (company-edbi-candidates arg))
+    (meta (company-edbi-meta arg))))
 
 (add-hook 'edbi:dbview-update-hook 'edbi:ac-editor-word-candidate-update)
 
