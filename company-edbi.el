@@ -32,17 +32,25 @@
 (require 'cl-lib)
 (require 'edbi)
 
-;; edbi:ac-editor-table-candidates
-;; edbi:ac-editor-column-candidates
-;; edbi:ac-editor-type-candidates
-;; edbi:ac-editor-keyword-candidates
-
 (defun company-edbi-prefix ()
   "Grab prefix for `company-edbi' backend."
   (and (eq major-mode 'edbi:sql-mode)
        (not (company-in-string-or-comment))
        (or (company-grab-symbol-cons "\\." 1)
            'stop)))
+
+(defun company-edbi-candidates (prefix)
+  "Candidates list for `edbi' query editor.
+PREFIX is a candidates prefix supplied by `company'."
+  (cl-remove-if-not
+   (lambda (x) (string-prefix-p prefix x t))
+   (append
+    (edbi:ac-editor-type-candidates)
+    (mapcar 'car
+            (append
+             (edbi:ac-editor-table-candidates)
+             (edbi:ac-editor-column-candidates)
+             (edbi:ac-editor-keyword-candidates))))))
 
 ;;;###autoload
 (defun company-edbi (command &optional arg)
@@ -52,7 +60,7 @@ See `company-backends' for more info about COMMAND and ARG."
   (cl-case command
     (interactive (company-begin-backend 'company-edbi))
     (prefix (company-edbi-prefix))
-    (candidates nil)))
+    (candidates (company-edbi-candidates arg))))
 
 (add-hook 'edbi:dbview-update-hook 'edbi:ac-editor-word-candidate-update)
 
