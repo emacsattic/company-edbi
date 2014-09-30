@@ -45,18 +45,23 @@
 PREFIX is a candidates prefix supplied by `company'."
   (cl-remove-if-not
    (lambda (x) (s-prefix? prefix x t))
-   (append
-    (edbi:ac-editor-type-candidates)
-    (mapcar 'car
-            (append
-             (edbi:ac-editor-table-candidates)
-             (edbi:ac-editor-column-candidates)
-             (edbi:ac-editor-keyword-candidates))))))
+   (mapcar
+    (lambda (x)
+      (if (consp x)
+          (car x)
+        x))
+    (append
+     (edbi:ac-editor-table-candidates)
+     (edbi:ac-editor-column-candidates)
+     (edbi:ac-editor-type-candidates)
+     (edbi:ac-editor-keyword-candidates)))))
 
 (defun company-edbi-meta (candidate)
   "Get CANDIDATE meta information."
   (let* ((summary (get-text-property 0 'summary candidate))
-         (document (s-trim-right (get-text-property 0 'document candidate))))
+         (document  (get-text-property 0 'document candidate)))
+    (setq summary (or summary ""))
+    (setq document (s-trim-right (or document "")))
     (concat summary
             (unless (string= summary document)
               (concat " " document)))))
