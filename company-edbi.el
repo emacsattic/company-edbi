@@ -22,9 +22,7 @@
 
 ;;; Commentary:
 
-;; Add `company-edbi' to allowed `company-mode' backends list
-;;
-;;     (add-to-list 'company-backends 'company-edbi)
+;; See the README for more details.
 
 ;;; Code:
 
