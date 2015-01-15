@@ -1,8 +1,8 @@
 ;;; company-edbi.el --- Edbi backend for company-mode
 
-;; Copyright (C) 2014-2015 by Malyshev Artem
+;; Copyright (C) 2014-2015 by Artem Malyshev
 
-;; Author: Malyshev Artem <proofit404@gmail.com>
+;; Author: Artem Malyshev <proofit404@gmail.com>
 ;; URL: https://github.com/proofit404/company-edbi
 ;; Version: 0.1.0
 ;; Package-Requires: ((company "0.8.5") (edbi "0.1.3") (cl-lib "0.5.0") (s "1.9.0"))
