@@ -74,7 +74,8 @@ See `company-backends' for more info about COMMAND and ARG."
     (interactive (company-begin-backend 'company-edbi))
     (prefix (company-edbi-prefix))
     (candidates (company-edbi-candidates arg))
-    (meta (company-edbi-meta arg))))
+    (meta (company-edbi-meta arg))
+    (ignore-case t)))
 
 (add-hook 'edbi:dbview-update-hook 'edbi:ac-editor-word-candidate-update)
 
