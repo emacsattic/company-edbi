@@ -66,7 +66,7 @@ PREFIX is a candidates prefix supplied by `company'."
               (concat " " document)))))
 
 ;;;###autoload
-(defun company-edbi (command &optional arg)
+(defun company-edbi (command &optional arg &rest _args)
   "Edbi backend for company-mode.
 See `company-backends' for more info about COMMAND and ARG."
   (interactive (list 'interactive))
